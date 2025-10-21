@@ -1,5 +1,5 @@
 export interface Gym {
-	id: number;  // ID sequencial (1, 2, 3...)
+	id: number;
 	name: string;
 	cnpj: string;
 	email: string;
@@ -7,17 +7,15 @@ export interface Gym {
 	address: string;
 	responsible_name: string;
 	is_active: boolean;
-	created_at: string;
 }
 
 export interface GymSession {
 	access_token: string;
-	refresh_token?: string;
 	gym: Gym;
 }
 
 export interface GymUser {
-	id: string;  // UUID do usuário (profiles)
+	id: string;
 	full_name: string;
 	email: string;
 	status: 'active' | 'inactive';

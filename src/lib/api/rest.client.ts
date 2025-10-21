@@ -32,8 +32,16 @@ class RestClient {
 
 	/**
 	 * Get the current access token
+	 * Always check localStorage to ensure we have the latest token
 	 */
 	getToken(): string | null {
+		// Always sync with localStorage
+		if (typeof window !== 'undefined') {
+			const storedToken = localStorage.getItem('gym_access_token');
+			if (storedToken !== this.accessToken) {
+				this.accessToken = storedToken;
+			}
+		}
 		return this.accessToken;
 	}
 
@@ -45,6 +53,9 @@ class RestClient {
 		options?: RequestInit
 	): Promise<ApiResponse<T>> {
 		try {
+			// Always sync token from localStorage before making request
+			this.getToken();
+
 			const headers: Record<string, string> = {
 				'Content-Type': 'application/json'
 			};
@@ -71,11 +82,6 @@ class RestClient {
 				if (response.status === 401) {
 					// Clear invalid token
 					this.setToken(null);
-
-					// Redirect to login if in browser context
-					if (typeof window !== 'undefined') {
-						window.location.href = '/login';
-					}
 				}
 
 				// Handle NestJS error format
@@ -94,7 +100,6 @@ class RestClient {
 				data
 			};
 		} catch (error) {
-			console.error('[API] Error:', error);
 			return {
 				success: false,
 				error: {
@@ -118,16 +123,6 @@ class RestClient {
 	async post<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
 		return this.fetchWithErrorHandling<T>(endpoint, {
 			method: 'POST',
-			body: body ? JSON.stringify(body) : undefined
-		});
-	}
-
-	/**
-	 * PUT request
-	 */
-	async put<T>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
-		return this.fetchWithErrorHandling<T>(endpoint, {
-			method: 'PUT',
 			body: body ? JSON.stringify(body) : undefined
 		});
 	}

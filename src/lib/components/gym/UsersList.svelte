@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Card, Modal } from '$lib/components/common';
+	import { Modal } from '$lib/components/common';
 	import type { GymUser } from '$lib/types/gym';
 	import { gymsApi } from '$lib/api/gyms.api';
 
@@ -50,53 +50,95 @@
 	}
 </script>
 
-<Card>
-	<h2 class="text-2xl font-bold text-gray-900 mb-4">Usuários Vinculados</h2>
+<style>
+	.glass-card {
+		background: rgba(18, 18, 18, 0.55);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 12px;
+	}
+
+	.glass-button {
+		background: rgba(18, 18, 18, 0.55);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+	}
+
+	.glass-button:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.btn-primary {
+		background: #8EB428;
+		border-radius: 8px;
+		transition: all 0.2s ease;
+	}
+
+	.btn-primary:hover {
+		background: #7a9922;
+	}
+
+	.btn-danger {
+		background: rgba(220, 53, 69, 0.9);
+		backdrop-filter: blur(10px);
+		border-radius: 8px;
+		transition: all 0.2s ease;
+	}
+
+	.btn-danger:hover {
+		background: rgba(220, 53, 69, 1);
+	}
+</style>
+
+<div class="glass-card p-6">
+	<h2 class="text-2xl font-bold text-white mb-6">Usuários Vinculados</h2>
 
 	{#if users.length === 0}
-		<div class="text-center py-8 text-gray-500">
+		<div class="text-center py-8 text-white/50">
 			Nenhum usuário vinculado à academia
 		</div>
 	{:else}
 		<div class="overflow-x-auto">
 			<table class="w-full">
 				<thead>
-					<tr class="border-b">
-						<th class="text-left py-3 px-4 font-semibold text-gray-700">Nome</th>
-						<th class="text-left py-3 px-4 font-semibold text-gray-700">E-mail</th>
-						<th class="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
-						<th class="text-left py-3 px-4 font-semibold text-gray-700">Data de Vínculo</th>
-						<th class="text-right py-3 px-4 font-semibold text-gray-700">Ações</th>
+					<tr class="border-b border-white/10">
+						<th class="text-left py-3 px-4 font-semibold text-white/70">Nome</th>
+						<th class="text-left py-3 px-4 font-semibold text-white/70">E-mail</th>
+						<th class="text-left py-3 px-4 font-semibold text-white/70">Status</th>
+						<th class="text-left py-3 px-4 font-semibold text-white/70">Data de Vínculo</th>
+						<th class="text-right py-3 px-4 font-semibold text-white/70">Ações</th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each users as user (user.id)}
-						<tr class="border-b hover:bg-gray-50 transition-colors">
-							<td class="py-3 px-4">{user.full_name}</td>
-							<td class="py-3 px-4 text-gray-600">{user.email}</td>
+						<tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+							<td class="py-3 px-4 text-white">{user.full_name}</td>
+							<td class="py-3 px-4 text-white/70">{user.email}</td>
 							<td class="py-3 px-4">
-								<span class="px-2 py-1 rounded-full text-xs font-medium {user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+								<span class="px-3 py-1 rounded-full text-xs font-medium {user.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-300'}">
 									{user.status === 'active' ? 'Ativo' : 'Inativo'}
 								</span>
 							</td>
-							<td class="py-3 px-4 text-gray-600">{formatDate(user.linked_at)}</td>
+							<td class="py-3 px-4 text-white/70">{formatDate(user.linked_at)}</td>
 							<td class="py-3 px-4 text-right space-x-2">
-								<Button
-									size="sm"
-									variant={user.status === 'active' ? 'outline' : 'primary'}
+								<button
+									class="{user.status === 'active' ? 'glass-button' : 'btn-primary'} px-4 py-1.5 text-sm text-white disabled:opacity-50"
 									onclick={() => handleToggleStatus(user)}
 									disabled={isLoading}
 								>
 									{user.status === 'active' ? 'Desativar' : 'Ativar'}
-								</Button>
-								<Button
-									size="sm"
-									variant="secondary"
+								</button>
+								<button
+									class="btn-danger px-4 py-1.5 text-sm text-white disabled:opacity-50"
 									onclick={() => confirmDelete(user)}
 									disabled={isLoading}
 								>
 									Remover
-								</Button>
+								</button>
 							</td>
 						</tr>
 					{/each}
@@ -104,7 +146,7 @@
 			</table>
 		</div>
 	{/if}
-</Card>
+</div>
 
 <Modal
 	isOpen={showDeleteModal}
@@ -112,23 +154,23 @@
 	title="Confirmar Remoção"
 >
 	<div class="space-y-4">
-		<p>Tem certeza que deseja remover o usuário <strong>{selectedUser?.full_name}</strong>?</p>
-		<p class="text-sm text-gray-600">Esta ação não pode ser desfeita.</p>
+		<p class="text-white">Tem certeza que deseja remover o usuário <strong>{selectedUser?.full_name}</strong>?</p>
+		<p class="text-sm text-white/60">Esta ação não pode ser desfeita.</p>
 
 		<div class="flex space-x-4 justify-end">
-			<Button
-				variant="outline"
+			<button
+				class="glass-button px-6 py-2 text-white"
 				onclick={() => { showDeleteModal = false; selectedUser = null; }}
 			>
 				Cancelar
-			</Button>
-			<Button
-				variant="secondary"
+			</button>
+			<button
+				class="btn-danger px-6 py-2 text-white disabled:opacity-50"
 				onclick={handleDelete}
 				disabled={isLoading}
 			>
 				{isLoading ? 'Removendo...' : 'Confirmar Remoção'}
-			</Button>
+			</button>
 		</div>
 	</div>
 </Modal>

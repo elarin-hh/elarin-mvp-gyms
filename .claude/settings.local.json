@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Guilherme/Documents/elarin-backend-api/elarin-backend-api/**)",
+      "Read(//c/Users/Guilherme/Documents/elarin-mvp-frontend/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

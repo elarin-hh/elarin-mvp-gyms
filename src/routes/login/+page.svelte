@@ -12,6 +12,8 @@
 		const result = await gymAuthActions.login({ email, password });
 
 		if (result.success) {
+			// Add a flag to indicate we just logged in successfully
+			sessionStorage.setItem('just_logged_in', 'true');
 			goto('/dashboard');
 		}
 	}
