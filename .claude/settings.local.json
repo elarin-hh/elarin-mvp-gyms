@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Read(//c/Users/Guilherme/Documents/elarin-backend-api/elarin-backend-api/**)",
-      "Read(//c/Users/Guilherme/Documents/elarin-mvp-frontend/**)"
+      "Read(//c/Users/Guilherme/Documents/elarin-mvp-frontend/**)",
+      "Read(//c/Users/notebook-guilherme/Documents/Elarin-projects/elarin-backend-api/src/modules/gym-admin/**)",
+      "Read(//c/Users/notebook-guilherme/Documents/Elarin-projects/elarin-backend-api/src/**)",
+      "Bash(find:*)",
+      "Read(//c/Users/notebook-guilherme/Documents/Elarin-projects/elarin-backend-api/**)"
     ],
     "deny": [],
     "ask": []

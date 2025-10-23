@@ -15,11 +15,19 @@ export interface GymSession {
 }
 
 export interface GymUser {
-	id: string;
+	link_id: number;
+	gym_id: number;
+	user_id: string;
 	full_name: string;
 	email: string;
+	avatar_url: string | null;
+	height_cm: number | null;
+	weight_kg: number | null;
+	locale: string;
 	status: 'active' | 'inactive';
 	linked_at: string;
+	link_updated_at: string;
+	user_created_at: string;
 }
 
 export interface GymStats {

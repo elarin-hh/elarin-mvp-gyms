@@ -48,17 +48,6 @@
 	}
 </script>
 
-<style>
-	.glass-button {
-		background: rgba(255, 255, 255, 0.1);
-		backdrop-filter: blur(30px);
-		-webkit-backdrop-filter: blur(30px);
-		border-radius: 18px;
-		position: relative;
-		overflow: hidden;
-	}
-</style>
-
 <div class="min-h-screen bg-black flex flex-col items-center justify-center px-4 py-8">
 	<div class="mb-8 text-center">
 		<h1 class="text-4xl font-bold text-white mb-2">Cadastrar Academia</h1>
@@ -151,7 +140,7 @@
 		<button
 			type="submit"
 			disabled={isLoading}
-			class="glass-button w-full px-6 py-3 text-white font-medium transition-all disabled:opacity-50"
+			class="glass-button-auth w-full px-6 py-3 text-white font-medium transition-all disabled:opacity-50"
 		>
 			{isLoading ? 'Cadastrando...' : 'Cadastrar Academia'}
 		</button>

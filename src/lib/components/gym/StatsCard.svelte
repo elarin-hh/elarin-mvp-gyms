@@ -17,16 +17,6 @@
 	};
 </script>
 
-<style>
-	.glass-card {
-		background: rgba(18, 18, 18, 0.55);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
-	}
-</style>
-
 <div class="glass-card p-6 text-center {variantClasses[variant]}">
 	<div class="flex flex-col items-center space-y-2">
 		{#if icon}

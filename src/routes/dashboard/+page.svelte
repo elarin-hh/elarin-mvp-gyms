@@ -58,39 +58,6 @@
 	});
 </script>
 
-<style>
-	.glass-card {
-		background: rgba(18, 18, 18, 0.55);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
-	}
-
-	.glass-button {
-		background: #8EB428;
-		border-radius: 8px;
-		transition: all 0.2s ease;
-	}
-
-	.glass-button:hover {
-		background: #7a9922;
-	}
-
-	.glass-button-secondary {
-		background: rgba(18, 18, 18, 0.55);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		transition: all 0.2s ease;
-	}
-
-	.glass-button-secondary:hover {
-		background: rgba(255, 255, 255, 0.1);
-	}
-</style>
-
 <div class="min-h-screen bg-black">
 	<!-- Header -->
 	<header class="glass-card mx-4 mt-4 mb-8">

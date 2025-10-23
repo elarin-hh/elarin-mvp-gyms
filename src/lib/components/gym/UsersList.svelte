@@ -16,7 +16,7 @@
 
 	async function handleToggleStatus(user: GymUser) {
 		isLoading = true;
-		const response = await gymsApi.toggleUserStatus(user.id);
+		const response = await gymsApi.toggleUserStatus(user.user_id);
 
 		if (response.success && onUpdate) {
 			onUpdate();
@@ -33,7 +33,7 @@
 		if (!selectedUser) return;
 
 		isLoading = true;
-		const response = await gymsApi.removeUser(selectedUser.id);
+		const response = await gymsApi.removeUser(selectedUser.user_id);
 
 		if (response.success && onUpdate) {
 			onUpdate();
@@ -49,50 +49,6 @@
 		return date.toLocaleDateString('pt-BR');
 	}
 </script>
-
-<style>
-	.glass-card {
-		background: rgba(18, 18, 18, 0.55);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
-	}
-
-	.glass-button {
-		background: rgba(18, 18, 18, 0.55);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		transition: all 0.2s ease;
-	}
-
-	.glass-button:hover {
-		background: rgba(255, 255, 255, 0.1);
-	}
-
-	.btn-primary {
-		background: #8EB428;
-		border-radius: 8px;
-		transition: all 0.2s ease;
-	}
-
-	.btn-primary:hover {
-		background: #7a9922;
-	}
-
-	.btn-danger {
-		background: rgba(220, 53, 69, 0.9);
-		backdrop-filter: blur(10px);
-		border-radius: 8px;
-		transition: all 0.2s ease;
-	}
-
-	.btn-danger:hover {
-		background: rgba(220, 53, 69, 1);
-	}
-</style>
 
 <div class="glass-card p-6">
 	<h2 class="text-2xl font-bold text-white mb-6">Usuários Vinculados</h2>
@@ -114,7 +70,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each users as user (user.id)}
+					{#each users as user (user.user_id)}
 						<tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
 							<td class="py-3 px-4 text-white">{user.full_name}</td>
 							<td class="py-3 px-4 text-white/70">{user.email}</td>
