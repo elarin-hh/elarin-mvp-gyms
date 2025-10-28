@@ -1,4 +1,4 @@
-// REST API client - Connected to Elarin NestJS Backend (Gym Admin)
+// REST API client - Connected to Elarin NestJS Backend (Organization Admin)
 // Backend runs on port 3001 (NestJS + Fastify)
 const API_BASE_URL = 'http://localhost:3001';
 
@@ -12,7 +12,7 @@ class RestClient {
 		this.baseUrl = baseUrl;
 		// Load token from localStorage on initialization
 		if (typeof window !== 'undefined') {
-			this.accessToken = localStorage.getItem('gym_access_token');
+			this.accessToken = localStorage.getItem('organization_access_token');
 		}
 	}
 
@@ -23,9 +23,9 @@ class RestClient {
 		this.accessToken = token;
 		if (typeof window !== 'undefined') {
 			if (token) {
-				localStorage.setItem('gym_access_token', token);
+				localStorage.setItem('organization_access_token', token);
 			} else {
-				localStorage.removeItem('gym_access_token');
+				localStorage.removeItem('organization_access_token');
 			}
 		}
 	}
@@ -37,7 +37,7 @@ class RestClient {
 	getToken(): string | null {
 		// Always sync with localStorage
 		if (typeof window !== 'undefined') {
-			const storedToken = localStorage.getItem('gym_access_token');
+			const storedToken = localStorage.getItem('organization_access_token');
 			if (storedToken !== this.accessToken) {
 				this.accessToken = storedToken;
 			}

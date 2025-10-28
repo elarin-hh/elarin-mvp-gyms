@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { gymAuthActions, isLoading as loading, authError } from '$lib/stores/gym-auth.store';
+	import { organizationAuthActions, isLoading as loading, authError } from '$lib/stores/organization-auth.store';
 
 	let email = $state('');
 	let password = $state('');
@@ -9,7 +9,7 @@
 	const error = $derived($authError);
 
 	async function handleLogin() {
-		const result = await gymAuthActions.login({ email, password });
+		const result = await organizationAuthActions.login({ email, password });
 
 		if (result.success) {
 			// Add a flag to indicate we just logged in successfully
@@ -25,8 +25,8 @@
 
 <div class="min-h-screen bg-black flex flex-col items-center justify-center px-4">
 	<div class="mb-16 text-center">
-		<h1 class="text-4xl font-bold text-white mb-2">Elarin Gym Admin</h1>
-		<p class="text-white/70">Painel Administrativo para Academias</p>
+		<h1 class="text-4xl font-bold text-white mb-2">Elarin Organizations</h1>
+		<p class="text-white/70">Painel Administrativo para Organizações</p>
 	</div>
 
 	<form onsubmit={(e) => { e.preventDefault(); handleLogin(); }} class="w-full max-w-md space-y-4">
@@ -40,7 +40,7 @@
 			type="email"
 			bind:value={email}
 			required
-			placeholder="E-mail da academia"
+			placeholder="E-mail da organização"
 			class="w-full px-6 py-3 bg-transparent border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/60 transition-colors"
 			style="border-radius: 18px; border-width: 0.8px;"
 		/>
@@ -69,7 +69,7 @@
 			onclick={goToRegister}
 			class="text-white/70 hover:text-white text-sm transition-colors"
 		>
-			Não tem uma conta? Cadastre sua academia
+			Não tem uma conta? Cadastre sua organização
 		</button>
 	</div>
 
