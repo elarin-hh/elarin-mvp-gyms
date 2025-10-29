@@ -7,7 +7,12 @@
       "Read(//c/Users/notebook-guilherme/Documents/Elarin-projects/elarin-backend-api/src/**)",
       "Bash(find:*)",
       "Read(//c/Users/notebook-guilherme/Documents/Elarin-projects/elarin-backend-api/**)",
-      "Read(//c/Users/Guilherme/Documents/Elarin-projects/elarin-backend-api/**)"
+      "Read(//c/Users/Guilherme/Documents/Elarin-projects/elarin-backend-api/**)",
+      "Read(//c/Users/Guilherme/Documents/Elarin-projects/elarin-mvp-frontend/src/**)",
+      "Read(//c/Users/Guilherme/Documents/Elarin-projects/elarin-mvp-frontend/**)",
+      "Bash(mkdir:*)",
+      "Bash(if not exist \"C:\\Users\\Guilherme\\Documents\\Elarin-projects\\elarin-mvp-organizations-b2b\\static\" mkdir \"C:\\Users\\Guilherme\\Documents\\Elarin-projects\\elarin-mvp-organizations-b2b\\static\")",
+      "Bash(copy:*)"
     ],
     "deny": [],
     "ask": []

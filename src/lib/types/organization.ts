@@ -23,12 +23,15 @@ export interface OrganizationSession {
 	organization: Organization;
 }
 
+export type MembershipStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE';
+
 export interface OrganizationUser {
 	id: number;
 	user_id: number;
 	organization_id: number;
 	role: string;
-	is_active: boolean;
+	status: MembershipStatus;
+	is_active: boolean; // Kept for backward compatibility
 	created_at: string;
 	users: {
 		id: number;
@@ -43,6 +46,7 @@ export interface OrganizationStats {
 	total_users: number;
 	active_users: number;
 	inactive_users: number;
+	pending_users: number;
 }
 
 export interface RegisterOrganizationData {

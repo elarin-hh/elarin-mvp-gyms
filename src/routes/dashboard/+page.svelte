@@ -1,29 +1,46 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { currentGym, gymAuthActions } from '$lib/stores/gym-auth.store';
-	import { gymsApi } from '$lib/api/gyms.api';
-	import StatsCard from '$lib/components/gym/StatsCard.svelte';
-	import UsersList from '$lib/components/gym/UsersList.svelte';
-	import type { GymUser, GymStats } from '$lib/types/gym';
+	import { currentOrganization, organizationAuthActions } from '$lib/stores/organization-auth.store';
+	import { organizationsApi } from '$lib/api/organizations.api';
+	import { AppHeader, Loading } from '$lib/components/common';
+	import StatsCard from '$lib/components/organization/StatsCard.svelte';
+	import UsersList from '$lib/components/organization/UsersList.svelte';
+	import PendingUsersList from '$lib/components/organization/PendingUsersList.svelte';
+	import type { OrganizationUser, OrganizationStats } from '$lib/types/organization';
+	import Users from 'lucide-svelte/icons/users';
+	import UserCheck from 'lucide-svelte/icons/user-check';
+	import UserX from 'lucide-svelte/icons/user-x';
+	import Clock from 'lucide-svelte/icons/clock';
 
-	const gym = $derived($currentGym);
+	const organization = $derived($currentOrganization);
 
-	let users = $state<GymUser[]>([]);
-	let stats = $state<GymStats>({ total_users: 0, active_users: 0, inactive_users: 0 });
+	let activeTab = $state<'active' | 'pending'>('active');
+	let users = $state<OrganizationUser[]>([]);
+	let pendingUsers = $state<OrganizationUser[]>([]);
+	let stats = $state<OrganizationStats>({ total_users: 0, active_users: 0, inactive_users: 0, pending_users: 0 });
 	let isLoading = $state(true);
+	let isScrolled = $state(false);
+	let showAvatarMenu = $state(false);
 
 	async function loadData() {
 		isLoading = true;
 
-		// Load users
-		const usersResponse = await gymsApi.getUsers();
+		// Load all users
+		const usersResponse = await organizationsApi.getUsers();
 		if (usersResponse.success && usersResponse.data) {
-			users = usersResponse.data;
+			// Filter only ACTIVE and INACTIVE users
+			users = usersResponse.data.filter(u => u.status === 'ACTIVE' || u.status === 'INACTIVE');
+		}
+
+		// Load pending users
+		const pendingResponse = await organizationsApi.getPendingUsers();
+		if (pendingResponse.success && pendingResponse.data) {
+			pendingUsers = pendingResponse.data;
 		}
 
 		// Load stats
-		const statsResponse = await gymsApi.getStats();
+		const statsResponse = await organizationsApi.getStats();
 		if (statsResponse.success && statsResponse.data) {
 			stats = statsResponse.data;
 		}
@@ -32,11 +49,38 @@
 	}
 
 	async function handleLogout() {
-		await gymAuthActions.logout();
+		await organizationAuthActions.logout();
 		goto('/login');
 	}
 
+	function handleToggleAvatarMenu() {
+		showAvatarMenu = !showAvatarMenu;
+	}
+
+	function handleClickOutside(e: MouseEvent) {
+		const target = e.target as HTMLElement;
+		if (!target.closest('.avatar-menu-container')) {
+			showAvatarMenu = false;
+		}
+	}
+
+	function handleSettings() {
+		// Navigate to settings page when implemented
+		console.log('Settings clicked');
+		showAvatarMenu = false;
+	}
+
 	onMount(async () => {
+		// Handle scroll effect for header
+		const handleScroll = () => {
+			isScrolled = window.scrollY > 10;
+		};
+		window.addEventListener('scroll', handleScroll);
+
+		// Cleanup
+		const cleanup = () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
 		// Check if we just logged in
 		const justLoggedIn = sessionStorage.getItem('just_logged_in');
 		if (justLoggedIn) {
@@ -47,7 +91,7 @@
 		}
 
 		// Check session for page refresh or direct access
-		const sessionCheck = await gymAuthActions.checkSession();
+		const sessionCheck = await organizationAuthActions.checkSession();
 
 		if (!sessionCheck.success) {
 			goto('/login');
@@ -55,47 +99,41 @@
 		}
 
 		await loadData();
+
+		return cleanup;
 	});
 </script>
 
 <div class="min-h-screen bg-black">
-	<!-- Header -->
-	<header class="glass-card mx-4 mt-4 mb-8">
-		<div class="max-w-7xl mx-auto px-6 py-4">
-			<div class="flex items-center justify-between">
-				<div>
-					<h1 class="text-2xl font-bold text-white">Elarin Gym Admin</h1>
-					{#if gym}
-						<p class="text-sm text-white/70">{gym.name}</p>
-					{/if}
-				</div>
-				<button
-					onclick={handleLogout}
-					class="glass-button-secondary px-6 py-2 text-white"
-				>
-					Sair
-				</button>
-			</div>
-		</div>
-	</header>
+	<AppHeader
+		bind:isScrolled
+		bind:showAvatarMenu
+		onToggleAvatarMenu={handleToggleAvatarMenu}
+		onSettings={handleSettings}
+		onLogout={handleLogout}
+		onClickOutside={handleClickOutside}
+	/>
 
 	<!-- Main Content -->
-	<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-		{#if isLoading}
-			<div class="flex items-center justify-center py-12">
-				<div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#8EB428]"></div>
+	<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-24">
+		{#if organization}
+			<div class="mb-8">
+				<h2 class="text-3xl font-bold text-white mb-2">{organization.name}</h2>
+				<p class="text-white/70">Painel de gerenciamento de usuários</p>
 			</div>
+		{/if}
+
+		{#if isLoading}
+			<Loading message="Carregando dados..." />
 		{:else}
 			<!-- Stats Cards -->
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 				<StatsCard
 					title="Total de Usuários"
 					value={stats.total_users}
 				>
 					{#snippet icon()}
-						<svg class="w-10 h-10 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-						</svg>
+						<Users class="w-10 h-10 text-blue-400" stroke-width={1.5} />
 					{/snippet}
 				</StatsCard>
 				<StatsCard
@@ -104,9 +142,7 @@
 					variant="success"
 				>
 					{#snippet icon()}
-						<svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-						</svg>
+						<UserCheck class="w-10 h-10 text-green-400" stroke-width={1.5} />
 					{/snippet}
 				</StatsCard>
 				<StatsCard
@@ -115,15 +151,58 @@
 					variant="muted"
 				>
 					{#snippet icon()}
-						<svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-						</svg>
+						<UserX class="w-10 h-10 text-gray-400" stroke-width={1.5} />
+					{/snippet}
+				</StatsCard>
+				<StatsCard
+					title="Pendentes"
+					value={stats.pending_users}
+				>
+					{#snippet icon()}
+						<Clock class="w-10 h-10 text-yellow-400" stroke-width={1.5} />
 					{/snippet}
 				</StatsCard>
 			</div>
 
-			<!-- Users List -->
-			<UsersList {users} onUpdate={loadData} />
+			<!-- Tabs -->
+			<div class="mb-8">
+				<div class="glass-card p-1.5 inline-flex gap-1 rounded-xl">
+					<button
+						onclick={() => activeTab = 'active'}
+						class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 {
+							activeTab === 'active'
+								? 'bg-primary-600 text-white shadow-lg shadow-primary-600/30'
+								: 'text-white/60 hover:text-white hover:bg-white/5'
+						}"
+					>
+						<Users size={18} />
+						Usuários Ativos/Inativos
+					</button>
+					<button
+						onclick={() => activeTab = 'pending'}
+						class="px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 relative {
+							activeTab === 'pending'
+								? 'bg-primary-600 text-white shadow-lg shadow-primary-600/30'
+								: 'text-white/60 hover:text-white hover:bg-white/5'
+						}"
+					>
+						<Clock size={18} />
+						Pendentes de Aprovação
+						{#if stats.pending_users > 0}
+							<span class="ml-1 px-2 py-0.5 bg-yellow-500 text-black rounded-full text-xs font-bold tabular-nums">
+								{stats.pending_users}
+							</span>
+						{/if}
+					</button>
+				</div>
+			</div>
+
+			<!-- Tab Content -->
+			{#if activeTab === 'active'}
+				<UsersList {users} onUpdate={loadData} />
+			{:else}
+				<PendingUsersList users={pendingUsers} onUpdate={loadData} />
+			{/if}
 		{/if}
 	</main>
 </div>

@@ -116,7 +116,12 @@
 
 <div class="min-h-screen bg-black flex flex-col items-center justify-center px-4 py-8">
 	<div class="mb-8 text-center">
-		<h1 class="text-4xl font-bold text-white mb-2">Cadastrar Organização</h1>
+		<img
+			src="/logo-elarin.png"
+			alt="Elarin"
+			class="h-16 mx-auto mb-6"
+		/>
+		<h1 class="text-3xl font-bold text-white mb-2">Cadastrar Organização</h1>
 		<p class="text-white/70">
 			{#if currentStep === 1}
 				Preencha os dados da sua organização
@@ -287,6 +292,15 @@
 </div>
 
 <style>
+	.glass-button-auth {
+		background: var(--color-glass-light);
+		backdrop-filter: blur(30px);
+		-webkit-backdrop-filter: blur(30px);
+		border-radius: 18px;
+		position: relative;
+		overflow: hidden;
+	}
+
 	.step-indicator {
 		width: 12px;
 		height: 12px;
@@ -298,10 +312,10 @@
 	.step-indicator.active {
 		width: 32px;
 		border-radius: 6px;
-		background: rgb(56, 189, 248);
+		background: var(--color-primary-500);
 	}
 
 	.step-indicator.completed {
-		background: rgb(56, 189, 248);
+		background: var(--color-primary-500);
 	}
 </style>

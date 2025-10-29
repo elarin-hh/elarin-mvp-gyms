@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { gymAuthActions } from '$lib/stores/gym-auth.store';
+	import { organizationAuthActions } from '$lib/stores/organization-auth.store';
 
 	onMount(async () => {
-		const sessionCheck = await gymAuthActions.checkSession();
+		const sessionCheck = await organizationAuthActions.checkSession();
 
 		if (sessionCheck.success) {
 			goto('/dashboard');

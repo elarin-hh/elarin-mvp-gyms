@@ -23,10 +23,25 @@
 	}
 </script>
 
+<style>
+  .glass-button {
+    background: var(--color-glass-light);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+</style>
+
 <div class="min-h-screen bg-black flex flex-col items-center justify-center px-4">
 	<div class="mb-16 text-center">
-		<h1 class="text-4xl font-bold text-white mb-2">Elarin Organizations</h1>
-		<p class="text-white/70">Painel Administrativo para Organizações</p>
+		<img
+			src="/logo-elarin.png"
+			alt="Elarin"
+			class="h-20 mx-auto mb-4"
+		/>
+		<p class="text-white/70 text-lg">Painel Administrativo B2B</p>
 	</div>
 
 	<form onsubmit={(e) => { e.preventDefault(); handleLogin(); }} class="w-full max-w-md space-y-4">

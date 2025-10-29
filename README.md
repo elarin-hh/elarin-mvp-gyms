@@ -1,10 +1,10 @@
-# Elarin Gym Admin
+# Elarin Organizations Admin
 
-Painel administrativo para academias parceiras da plataforma Elarin.
+Painel administrativo para organizações parceiras da plataforma Elarin.
 
 ## 🎯 Funcionalidades
 
-- **Autenticação**: Login e cadastro de academias parceiras
+- **Autenticação**: Login e cadastro de organizações parceiras
 - **Dashboard**: Visão geral com estatísticas de usuários
 - **Gestão de Usuários**:
   - Listagem de usuários vinculados
@@ -53,45 +53,45 @@ const API_BASE_URL = 'http://localhost:3001';
 O backend deve fornecer os seguintes endpoints:
 
 #### Autenticação
-- `POST /gyms/auth/register` - Cadastrar nova academia
-- `POST /gyms/auth/login` - Login de academia
-- `POST /gyms/auth/logout` - Logout
+- `POST /organizations/auth/register` - Cadastrar nova organização
+- `POST /organizations/auth/login` - Login de organização
+- `POST /organizations/auth/logout` - Logout
 
 #### Gestão
-- `GET /gyms/profile` - Dados da academia logada
-- `GET /gyms/users` - Listar usuários vinculados
-- `PATCH /gyms/users/:id/toggle` - Ativar/desativar usuário
-- `DELETE /gyms/users/:id` - Remover vínculo
-- `GET /gyms/stats` - Estatísticas
+- `GET /organizations/profile` - Dados da organização logada
+- `GET /organizations/users` - Listar usuários vinculados
+- `PATCH /organizations/users/:id/toggle` - Ativar/desativar usuário
+- `DELETE /organizations/users/:id` - Remover vínculo
+- `GET /organizations/stats` - Estatísticas
 
 ## 📁 Estrutura do Projeto
 
 ```
 src/
 ├── lib/
-│   ├── api/                    # Clients da API
-│   │   ├── rest.client.ts      # Cliente HTTP genérico
-│   │   └── gyms.api.ts         # Endpoints de academias
+│   ├── api/                        # Clients da API
+│   │   ├── rest.client.ts          # Cliente HTTP genérico
+│   │   └── organizations.api.ts    # Endpoints de organizações
 │   ├── components/
-│   │   ├── common/             # Componentes reutilizáveis
+│   │   ├── common/                 # Componentes reutilizáveis
 │   │   │   ├── Button.svelte
 │   │   │   ├── Card.svelte
 │   │   │   └── Modal.svelte
-│   │   └── gym/                # Componentes específicos
+│   │   └── organization/           # Componentes específicos
 │   │       ├── StatsCard.svelte
 │   │       └── UsersList.svelte
-│   ├── stores/                 # Gerenciamento de estado
-│   │   └── gym-auth.store.ts
-│   └── types/                  # Tipos TypeScript
-│       ├── gym.ts
+│   ├── stores/                     # Gerenciamento de estado
+│   │   └── organization-auth.store.ts
+│   └── types/                      # Tipos TypeScript
+│       ├── organization.ts
 │       └── api.ts
 ├── routes/
-│   ├── login/                  # Página de login
-│   ├── register/               # Página de cadastro
-│   ├── dashboard/              # Dashboard principal
-│   └── +page.svelte            # Redirecionamento inicial
-├── app.css                     # Estilos globais
-└── app.html                    # HTML base
+│   ├── login/                      # Página de login
+│   ├── register/                   # Página de cadastro
+│   ├── dashboard/                  # Dashboard principal
+│   └── +page.svelte                # Redirecionamento inicial
+├── app.css                         # Estilos globais
+└── app.html                        # HTML base
 ```
 
 ## 🎨 Design
@@ -105,41 +105,52 @@ O projeto segue o mesmo padrão visual do frontend principal Elarin:
 ## 🔐 Autenticação
 
 O sistema utiliza JWT (JSON Web Tokens) para autenticação:
-- Token armazenado em `localStorage` como `gym_access_token`
+- Token armazenado em `localStorage` como `organization_access_token`
 - Separado do token de usuários comuns para evitar conflitos
 - Redirecionamento automático para login em caso de token inválido
 
 ## 📝 Tipos de Dados
 
-### Gym (Academia)
+### Organization (Organização)
 ```typescript
-interface Gym {
-  id: string;
+interface Organization {
+  id: number;
   name: string;
-  cnpj: string;
+  code: string;
+  federal_tax_id: string;
   email: string;
   phone: string;
   address: string;
   responsible_name: string;
+  plan_id: number | null;
   is_active: boolean;
   created_at: string;
+  updated_at: string;
 }
 ```
 
-### GymUser (Usuário Vinculado)
+### OrganizationUser (Usuário Vinculado)
 ```typescript
-interface GymUser {
-  id: string;
-  full_name: string;
-  email: string;
-  status: 'active' | 'inactive';
-  linked_at: string;
+interface OrganizationUser {
+  id: number;
+  user_id: number;
+  organization_id: number;
+  role: string;
+  is_active: boolean;
+  created_at: string;
+  users: {
+    id: number;
+    email: string;
+    full_name: string;
+    avatar_url: string | null;
+    created_at: string;
+  };
 }
 ```
 
-### GymStats (Estatísticas)
+### OrganizationStats (Estatísticas)
 ```typescript
-interface GymStats {
+interface OrganizationStats {
   total_users: number;
   active_users: number;
   inactive_users: number;
@@ -151,10 +162,10 @@ interface GymStats {
 Para integração completa:
 
 1. **Backend**: Implementar os endpoints listados acima no backend Elarin
-2. **Database**: Criar tabelas:
-   - `gyms`: Dados das academias
-   - `gym_user_links`: Vínculos entre academias e usuários
-3. **Autenticação**: Adicionar autenticação JWT específica para academias
+2. **Database**: Tabelas já existentes:
+   - `organizations`: Dados das organizações
+   - `organization_users`: Vínculos entre organizações e usuários
+3. **Autenticação**: Adicionar autenticação JWT específica para organizações
 4. **Deploy**: Configurar deploy em produção
 
 ## 📄 Licença

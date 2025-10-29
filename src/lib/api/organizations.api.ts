@@ -76,5 +76,29 @@ export const organizationsApi = {
 	 */
 	async getStats(): Promise<ApiResponse<OrganizationStats>> {
 		return restClient.get<OrganizationStats>('/organizations/stats');
+	},
+
+	/**
+	 * Get pending users waiting for approval
+	 * GET /organizations/users/pending
+	 */
+	async getPendingUsers(): Promise<ApiResponse<OrganizationUser[]>> {
+		return restClient.get<OrganizationUser[]>('/organizations/users/pending');
+	},
+
+	/**
+	 * Approve a pending user
+	 * PATCH /organizations/users/:userId/approve
+	 */
+	async approveUser(userId: number): Promise<ApiResponse<OrganizationUser>> {
+		return restClient.patch<OrganizationUser>(`/organizations/users/${userId}/approve`);
+	},
+
+	/**
+	 * Reject a pending user
+	 * DELETE /organizations/users/:userId/reject
+	 */
+	async rejectUser(userId: number): Promise<ApiResponse<{ message: string }>> {
+		return restClient.delete<{ message: string }>(`/organizations/users/${userId}/reject`);
 	}
 };
